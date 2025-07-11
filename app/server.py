@@ -66,8 +66,8 @@ def chat_background(user_input, sid):
         socketio.emit("bot_message", {"text": "Assistant: Please provide exactly 3 keywords."}, to=sid)
         return
 
-    socketio.emit("bot_message", {"text": f"Assistant: Searching Snapdeal for {keywords}..."}, to=sid)
-
+    socketio.emit("bot_message", {"text": f"Assistant: Recommending Products..."}, to=sid)
+    print( f"Assistant: Searching Snapdeal for {keywords}...")
     # Scraper step
     try:
         # Use the existing browser in a new loop for scraping
@@ -79,6 +79,7 @@ def chat_background(user_input, sid):
     # Emit products
     for p in products:
         # print(p)
+        socketio.emit("bot_message", {"text": "Assistant: Some great products you will like..."}, to=sid)
         socketio.emit("product", p, to=sid)
 
     socketio.emit("bot_message", {"text": "Assistant: Do any interest you, or would you like more options?"}, to=sid)
