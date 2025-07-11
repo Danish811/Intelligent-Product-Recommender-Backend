@@ -75,15 +75,6 @@ def chat_background(user_input, sid):
     except Exception as e:
         socketio.emit("bot_message", {"text": f"Assistant: Scraping failed: {e}"}, to=sid)
         return
-    finally:
-        # Close Playwright browser and engine
-        if browser:
-            playwright_loop.run_until_complete(browser.close())
-            browser = None
-        if pw:
-            playwright_loop.run_until_complete(pw.stop())
-            pw = None
-        # loop.close()
 
     # Emit products
     for p in products:
@@ -94,8 +85,9 @@ def chat_background(user_input, sid):
 
 @socketio.on("connect")
 def handle_connect():
+    emit("bot_message", {"text": "Assistant: Hello! I’m online and ready to help you."})
     init_playwright()
-    emit("bot_message", {"text": "🤖 Assistant: Hello! I’m online and ready to help you."})
+    
 
 @socketio.on("user_message")
 def handle_message(data):

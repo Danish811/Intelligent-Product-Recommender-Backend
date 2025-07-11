@@ -1,7 +1,7 @@
 # run.py
 
 from app.server import app, socketio
-from app.server import browser,pw
+from app.server import browser,pw, chain
 import atexit
 import asyncio
 
@@ -9,6 +9,7 @@ import asyncio
 @atexit.register
 def cleanup_playwright():
     try:
+        chain.memory.clear()
         loop = asyncio.get_event_loop()
         if browser and browser.is_connected():
             loop.run_until_complete(browser.close())
