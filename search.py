@@ -2,6 +2,7 @@ import asyncio
 from playwright.async_api import Browser
 from urllib.parse import quote_plus
 import logging
+from playwright.async_api import TimeoutError as PlaywrightTimeoutError
 
 # Set up basic logging
 logging.basicConfig(level=logging.INFO)
@@ -13,12 +14,19 @@ async def snapdeal_scraper(page, search_term: str):
         logging.info(f"Navigating to URL: {url}")
 
         await page.goto(url, wait_until="commit")
-        await page.wait_for_selector("div.product-tuple-listing", timeout=30000)
+        
+        try:
+            await page.wait_for_selector("div.product-tuple-listing", timeout=3000)
+        except PlaywrightTimeoutError:
+            logging.warning(f"No products found for search term: '{search_term}' (selector not found)")
+            return []
+
         products = await page.query_selector_all("div.product-tuple-listing")
         logging.info(f"Found {len(products)} product containers for search term: '{search_term}'")
+        
         results = []
         for p in products:
-            if len(results) >= 3:
+            if len(results) >= 4:
                 break
             # Parallelize all selector queries at once
             title_el, price_el, discount_el, link_el, img_el = await asyncio.gather(

@@ -77,6 +77,8 @@ def chat_background(user_input, sid):
         return
 
     # Emit products
+    if len(products) == 0:
+        socketio.emit("bot_message", {"text": "Assistant: These Products are not available. Do you have any other query?"}, to=sid)
     for p in products:
         # print(p)
         socketio.emit("bot_message", {"text": "Assistant: Some great products you will like..."}, to=sid)
