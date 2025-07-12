@@ -16,7 +16,7 @@ async def snapdeal_scraper(page, search_term: str):
         await page.goto(url, wait_until="commit")
         
         try:
-            await page.wait_for_selector("div.product-tuple-listing", timeout=30000)
+            await page.wait_for_selector("div.product-tuple-listing", timeout=15000)
         except PlaywrightTimeoutError:
             logging.warning(f"No products found for search term: '{search_term}' (selector not found)")
             return []
